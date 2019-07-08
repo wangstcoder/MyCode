@@ -27,7 +27,7 @@ public class TestMain {
 
 		List infoLine = new ArrayList();
 		readInfo = new ReadFromFile();
-		infoLine = readInfo.readFileByLines("D:\\macIP4.txt");
+		infoLine = readInfo.readFileByLines("D:\\macIP1.txt");
 		// System.out.println(infoLine.get(0));
 		// String test = (String) infoLine.get(0);
 		// String[] strArray = test.split("\t");
@@ -54,18 +54,19 @@ public class TestMain {
 			try {
 				Thread.sleep(300);
 				String result = httpSend.sendGet(url, list);
-				System.out.println(jsonObject(result));
+				System.out.println("******succe  "+jsonObject(result));
 				resultInfo = jsonObject(result);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				try {
 					Thread.sleep(300);
 					String result = httpSend.sendGet(url, list);
+					System.out.println("######excep  "+jsonObject(result));
 					resultInfo = jsonObject(result);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					// 写入到异常文件
-					writeFile("D:\\exceRresultIP4.txt", typeId + "\t" + mac
+					writeFile("D:\\exceRresultIP1.txt", typeId + "\t" + mac
 							+ "\t" + ip + "\r\n");
 					e1.printStackTrace();
 				} catch (URISyntaxException e1) {
@@ -83,7 +84,7 @@ public class TestMain {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			writeFile("D:\\succeRresultIP4.txt", typeId + "\t" + mac + "\t"
+			writeFile("D:\\succeRresultIP1.txt", typeId + "\t" + mac + "\t"
 					+ resultInfo + "\r\n");// succeRresultIP
 		}
 

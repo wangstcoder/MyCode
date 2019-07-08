@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>TerminalManagement</title>
+
+<link href="./css/bootstrap.min.css" rel="stylesheet"/>
+<link href="./css/styles.css" rel="stylesheet"/>
+
+
+</head>
+
+<body>
+	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#"><span>Manager</span>Admin</a>
+			</div>
+		</div><!-- /.container-fluid -->
+	</nav>
+		
+	<div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
+		<ul class="nav menu">
+			<li><a href="#"><span class="glyphicon glyphicon-th"></span>终端管理</a></li>
+		</ul>
+	</div><!--/.sidebar-->
+		
+	<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+		<div class="row">
+			<ol class="breadcrumb">
+				<li><a href="#"><span class="glyphicon glyphicon-home"></span></a></li>
+				<li class="active">终端管理</li>
+			</ol>
+		</div><!--/.row-->
+		
+		<div class="row">
+			<div class="col-lg-12">
+				 <h1 class="page-header"></h1> 
+			</div>
+		</div><!--/.row-->
+				
+		
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="panel panel-default">
+					<div class="panel-heading">状态设置</div>
+					<div class="panel-body">
+						<div class="col-md-6">
+							<form role="form">
+									<div class="form-group" style="width:180px;padding-left:30px;">
+										<div class="radio">
+											<label >
+												<input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" ><span style="font-size:15px;" >空闲</span></input>
+												<!-- checked -->
+												</label>
+										</div>
+										<div class="radio">
+											<label >
+												<input type="radio" name="optionsRadios" id="optionsRadios2" value="option2" ><span style="font-size:15px;">忙碌</span></input>
+											</label>
+										</div>
+									</div>
+									<!--type="submit"-->
+									<button type="button" class="btn btn-primary" name="button" style="width:120px">确定</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div><!-- /.col-->
+		</div><!-- /.row -->
+		
+	</div>	<!--/.main-->
+	
+	
+
+
+	<script src="./js/jquery.min.js"></script>
+	<script src="./layer/layer.js"></script>
+	<script src="./js/bootstrap.min.js"></script>
+
+
+<script type="text/javascript"> 
+
+//模拟终端begin  
+//初始化阶段自动连接websocket 
+var socket;
+if (typeof (WebSocket) == "undefined") {
+console.log("遗憾：您的浏览器不支持WebSocket");
+} else {
+console.log("恭喜：您的浏览器支持WebSocket");
+
+//实现化WebSocket对象
+//指定要连接的服务器地址与端口建立连接
+//注意ws、wss使用不同的端口。我使用自签名的证书测试，
+//无法使用wss，浏览器打开WebSocket时报错
+//ws对应http、wss对应https。
+socket = new WebSocket("ws://localhost:10000/ws/myWebSocket");
+//连接打开事件
+socket.onopen = function() {
+    console.log("Socket 已打开");
+    socket.send("消息发送测试(From Client)");
+};
+//收到消息事件
+socket.onmessage = function(msg) {
+    alert(msg.data);
+};
+//连接关闭事件
+socket.onclose = function() {
+    console.log("Socket已关闭");
+};
+//发生了错误事件
+socket.onerror = function() {
+    alert("Socket发生了错误");
+}
+
+//窗口关闭时，关闭连接
+window.unload=function() {
+    socket.close();
+};
+}
+//模拟终端over
+
+
+	$(function() {
+		$('button').click(function() {
+			var val = $('input[name="optionsRadios"]:checked').val();
+			/* console.log(val); */
+			if (val) {
+				$.ajax({
+					type : "GET",
+					url : "/getmsg",
+					contentType : "application/json;charset=utf-8",
+					dataType : "text",
+					data: "msg="+val,
+					async : true,
+					cache : false,
+					ifModified : true,
+					success : function(result) {
+						console.log(result);
+						console.log("发送成功！");
+						layer.msg(result); 
+					},
+					error : function(XMLHttpRequest) {
+						console.log("发送失败！");
+					}
+				});
+			}
+		});
+	})
+</script>	
+</body>
+
+</html>
